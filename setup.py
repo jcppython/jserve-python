@@ -2,10 +2,26 @@
 # -*- coding: utf-8 -*-
 
 from setuptools.command.test import test as TestCommand
-from os import path
 from setuptools import setup
 
-here = path.abspath(path.dirname(__file__))
+import os
+import sys
+import re
+import codecs
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+def read(*parts):
+    # intentionally *not* adding an encoding option to open
+    return codecs.open(os.path.join(here, *parts), 'r').read()
+
+def find_version(*file_paths):
+    version_file = read(*file_paths)
+    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
+                              version_file, re.M)
+    if version_match:
+        return version_match.group(1)
+    raise RuntimeError("Unable to find version string.")
 
 class Tox(TestCommand):
     def finalize_options(self):
@@ -20,12 +36,12 @@ class Tox(TestCommand):
         sys.exit(errcode)
 
 # Get the long description from the README file
-with open(path.join(here, "README.md")) as in_file:
+with open(os.path.join(here, "README.md")) as in_file:
     long_description = in_file.read()
 
 setup(
     name="jserve",
-    version="0.0.2",
+    version=find_version('jserve', '__init__.py'),
     description="A python server for production application support bidirectional communacation",
     long_description=long_description,
     long_description_content_type="text/markdown",

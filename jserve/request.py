@@ -2,9 +2,8 @@
 # -*- coding: utf-8 -*-
 
 """
-File: __init__.py
+File: request.py
 Author: jcppython(jcppython@outlook.com)
-Date: 2022/04/30 16:50:18
+Date: 2022/05/02 09:50:18
 """
 
-__version__ = '0.0.1'

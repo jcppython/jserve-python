@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+docs/index.rst
+.gitignore
+docs/make.bat
+.gitignore
+docs/jserve.rst
+docs/Makefile
