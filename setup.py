@@ -25,16 +25,6 @@ def find_version(*file_paths):
     raise RuntimeError("Unable to find version string.")
 
 
-def parse_requirements(filename):
-    """
-    读取 requirements.txt
-    """
-    with open(os.path.join(here, filename), 'r', encoding='utf-8') as file_:
-        lines = map(lambda x: x.strip('\n'), file_.readlines())
-    lines = filter(lambda x: x and not x.startswith('#') and not x.startswith('-'), lines)
-    return list(lines)
-
-
 class Tox(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -64,10 +54,13 @@ setup(
     url="https://github.com/jcppython/jserve-python",
     packages=["jserve"],
     python_requires=">=3.6",
-    install_requires=parse_requirements('requirements.txt'),
-    tests_require=(
-        parse_requirements('requirements.txt') +
-        parse_requirements('requirements-test.txt')),
+    install_requires=[
+        'socketio',
+        'tornado'
+    ],
+    tests_require=[
+        'tox'
+    ],
     cmdclass = {'test': Tox},
     classifiers=[
         "Development Status :: 3 - Alpha",
