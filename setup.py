@@ -15,6 +15,7 @@ def read(*parts):
     # intentionally *not* adding an encoding option to open
     return codecs.open(os.path.join(here, *parts), 'r').read()
 
+
 def find_version(*file_paths):
     version_file = read(*file_paths)
     version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
@@ -22,6 +23,17 @@ def find_version(*file_paths):
     if version_match:
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
+
+
+def parse_requirements(filename):
+    """
+    读取 requirements.txt
+    """
+    with open(os.path.join(here, filename), 'r', encoding='utf-8') as file_:
+        lines = map(lambda x: x.strip('\n'), file_.readlines())
+    lines = filter(lambda x: x and not x.startswith('#') and not x.startswith('-'), lines)
+    return list(lines)
+
 
 class Tox(TestCommand):
     def finalize_options(self):
@@ -35,9 +47,11 @@ class Tox(TestCommand):
         errcode = tox.cmdline(self.test_args)
         sys.exit(errcode)
 
+
 # Get the long description from the README file
-with open(os.path.join(here, "README.md")) as in_file:
+with open(os.path.join(here, "README.md"), 'r') as in_file:
     long_description = in_file.read()
+
 
 setup(
     name="jserve",
@@ -50,7 +64,10 @@ setup(
     url="https://github.com/jcppython/jserve-python",
     packages=["jserve"],
     python_requires=">=3.6",
-    tests_require=['tox'],
+    install_requires=parse_requirements('requirements.txt'),
+    tests_require=(
+        parse_requirements('requirements.txt') +
+        parse_requirements('requirements-test.txt')),
     cmdclass = {'test': Tox},
     classifiers=[
         "Development Status :: 3 - Alpha",

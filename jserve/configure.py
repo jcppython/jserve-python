@@ -13,12 +13,22 @@ import json
 
 options = None
 
-__fixed_sserver_conf = "conf/sserver.conf"
-__fixed_sserver_logname = "app"
+def init(workdir, conf):
+    r""" 初始化配置
+    """
+    global options
+
+    if options is not None:
+        raise Exception("you can't init configure twice")
+
+    with open(conf) as f:
+        options = json.load(f)
+
+    __buildin_option(workdir)
+
 
 def add_option(path, value):
-    """
-    添加指定配置
+    r""" 添加配置
 
     Args:
 
@@ -41,30 +51,13 @@ def add_option(path, value):
             p = p[key]
 
 
-def __buildin_option(workdir, category):
+def __buildin_option(workdir):
     """
     填充内置配置项
     """
     global options
 
-    options['app']['name'] = category
     add_option('env.workdir', workdir)
     options['log']['name'] = __fixed_sserver_logname
     options['log']['path'] = os.path.join(options['env']['workdir'], options['log']['path'])
     options['log']['level'] = getattr(logging, options['log']['level'].upper())
-
-
-def init(workdir, category):
-    """
-    创建配置
-    """
-    global options
-
-    if options is not None:
-        raise Exception("you can't init configure twice")
-
-    with open("{}/{}/{}".format(workdir, category, __fixed_sserver_conf)) as f:
-        options = json.load(f)
-
-    __buildin_option(workdir, category)
-

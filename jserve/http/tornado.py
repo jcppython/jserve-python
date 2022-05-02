@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -7,32 +7,38 @@ Author: jcppython(jcppython@outlook.com)
 Date: 2022/05/02 01:50:18
 """
 
-import os
-import logging
-import asyncio
-import socketio
-import tornado
-import tornado.web
-import tornado.options
-import tornado.platform.asyncio
-
 import log
-import configure
-import ssocketio
+import http
 
-class Server(object):
-    r""" App 服务
+class Tornado(http.Http):
+    r""" 基于 tornado 的 http 服务
     """
 
-    @classmethod
-    def run(cls, port, routes):
+    def __init__(self):
+        r"""
+        """
+        self.__enable_log()
+        self._routes = ()
+
+    def add_route(self, route, handler):
+        r""" 添加请求处理路由
+        """
+        self._routes.append((route, handler))
+
+    def run(self):
         r""" 需要捕获异常
         """
+
         tornado.platform.asyncio.AsyncIOMainLoop().install()
 
-        cls.__enable_log()
-        app = cls.__create_app(routes)
-        app.listen(port)
+        self._app = tornado.web.Application(
+            self._routes,
+            settings = dict(
+                debug=True,
+                autoescape=None
+            )
+        )
+        self._app.listen(port)
 
         loop = asyncio.get_event_loop()
         try:
@@ -45,11 +51,10 @@ class Server(object):
         finally:
             loop.close()
 
-    @classmethod
-    def __enable_log(cls):
+    def __enable_log(self):
+        r""" 设置日志
         """
-        启用日志
-        """
+
         config = [
             {
                 'logger': tornado.log.access_log,
@@ -70,19 +75,3 @@ class Server(object):
             d['logger'].addHandler(h)
             d['logger'].setLevel(configure.options['log']['level'])
 
-    @classmethod
-    def __create_app(cls, routes):
-        ssocketio.init(True, async_mode='tornado', cors_allowed_origins="*")
-        ssocketio.load_event("./event/")
-
-        routes.append(
-            (r"/socket.io/.*/", socketio.get_tornado_handler(ssocketio.sio))
-        )
-
-        return tornado.web.Application(
-            routes,
-            settings = dict(
-                debug=True,
-                autoescape=None
-            )
-        )

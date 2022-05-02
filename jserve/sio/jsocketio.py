@@ -1,4 +1,4 @@
-# !/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -31,6 +31,9 @@ def init(is_async=True, **kwargs):
 
     sio = __create_async_server(**kwargs) if is_async else __create_sync_server(**kwargs)
 
+    ssocketio.init(True, async_mode='tornado', cors_allowed_origins="*")
+    ssocketio.load_event("./event/")
+
 
 def load_event(path):
     r""" 遍历 path 目录 .py 模块，完成 @sio 事件的加载
@@ -54,10 +57,17 @@ def load_event(path):
             state, mod_name, path, file
         ))
 
+def http_handler(**kwargs):
+    """
+    """
+    sio.http_handler()
+    return socketio.get_tornado_handler(ssocketio.sio)
+
 
 def __config_server(kwargs, is_async=True):
     r""" 完成 server 创建的配置构建
 
+    https://python-socketio.readthedocs.io/en/latest/api.html#server-class
     https://python-socketio.readthedocs.io/en/latest/server.html#emitting-from-external-processes
     connect to the redis queue as an external process
     external_sio = socketio.RedisManager('redis://', write_only=True)
