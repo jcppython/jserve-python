@@ -12,13 +12,13 @@ import logging
 import asyncio
 import socketio
 
-import log
-import configure
-import sio
 import logging
 import traceback
 
-import http
+from . import configure
+from . import log
+from . import sio
+from . import http
 
 def create(workdir, conf):
     r""" 创建 server 服务

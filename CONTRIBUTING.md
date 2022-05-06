@@ -36,3 +36,4 @@ python3 -m twine upload  dist/*
 - https://packaging.python.org/en/latest/tutorials/packaging-projects/
 - https://www.oschina.net/translate/open-sourcing-a-python-project-the-right-way
 - https://juejin.cn/post/6966606637612138504
+- [setup-vs-requirement]: https://caremad.io/posts/2013/07/setup-vs-requirement/

@@ -52,14 +52,15 @@ setup(
     author="jcppython",
     author_email="jcppython@outlook.org",
     url="https://github.com/jcppython/jserve-python",
-    packages=["jserve"],
+    packages=["jserve", "jserve/sio", "jserve/http"],
     python_requires=">=3.6",
     install_requires=[
-        'socketio',
+        'python-socketio',
         'tornado'
     ],
     tests_require=[
-        'tox'
+        'tox',
+        'python-dotenv'
     ],
     cmdclass = {'test': Tox},
     classifiers=[

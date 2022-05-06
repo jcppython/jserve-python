@@ -1,0 +1,14 @@
+{
+    "app": {
+        "port": "8011"
+    },
+    "log": {
+        "path": "log",
+        "level": "debug"
+    },
+    "socketio": {
+        "event": [
+            "/tmp/event/"
+        ]
+    }
+}
