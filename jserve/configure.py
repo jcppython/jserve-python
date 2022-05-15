@@ -58,6 +58,5 @@ def __buildin_option(workdir):
     global options
 
     add_option('env.workdir', workdir)
-    options['log']['name'] = __fixed_sserver_logname
     options['log']['path'] = os.path.join(options['env']['workdir'], options['log']['path'])
     options['log']['level'] = getattr(logging, options['log']['level'].upper())

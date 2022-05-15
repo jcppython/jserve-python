@@ -17,7 +17,6 @@ if __name__ == '__main__':
     parser.add_argument('--workdir', type=str, required=True)
     args = parser.parse_args()
 
-    server = jserve.server.create(args.workdir, args.conf)
-    server.run()
+    server = jserve.run(args.workdir, args.conf)
 
 

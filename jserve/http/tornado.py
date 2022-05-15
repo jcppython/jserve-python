@@ -7,10 +7,14 @@ Author: jcppython(jcppython@outlook.com)
 Date: 2022/05/02 01:50:18
 """
 
-import log
-import http
+import os
+import tornado
 
-class Tornado(http.Http):
+from .. import log
+from .. import configure
+from .http import Http
+
+class Tornado(Http):
     r""" 基于 tornado 的 http 服务
     """
 
@@ -18,12 +22,6 @@ class Tornado(http.Http):
         r"""
         """
         self.__enable_log()
-        self._routes = ()
-
-    def add_route(self, route, handler):
-        r""" 添加请求处理路由
-        """
-        self._routes.append((route, handler))
 
     def run(self):
         r""" 需要捕获异常

@@ -14,50 +14,49 @@ import socketio
 
 import logging
 import traceback
+import importlib
 
 from . import configure
 from . import log
 from . import sio
-from . import http
+from .http import tornado as jtornado
 
-def create(workdir, conf):
+__http_server = None
+
+
+def create_http_server():
+    r""" 创建 http 服务
+
+    todo:
+    需要改成动态 import 对应的 http 框架
+    """
+    if configure.options['http']['type'] == 'tornado':
+        return jtornado.Tornado()
+
+    return None
+
+def run(workdir, confFile):
     r""" 创建 server 服务
     """
+    global __http_server
 
-    configure.init(workdir, conf)
+    configure.init(workdir, confFile)
 
     logger = logging.getLogger()
     logger.setLevel(configure.options['log']['level'])
     log.logDecorateStandard(logger, configure.options['log']['path'], configure.options['log']['name'])
 
-    return Server()
+    __http_server = create_http_server()
 
+    if 'socketio' in configure.options:
+        socketio_route = configure.options['socketio']['route']
+        __http_server.add_route(
+            (f"/{socketio_route}/.*/", sio.http_handler())
+        )
 
-class Server(object):
-    r""" jserve 服务接口
-    """
-
-    def __init__(self):
-        r""" 创建一个 server
-
-        Args:
-
-        workdir: string 服务运行目录，决定 log 等产出位置
-        conf: 服务配置文件
-        """
-
-        self._http_server = http.Http(conf['http'])
-
-        if 'sio' in kwargs:
-            self._http_server.add_route(
-                (r"/socket.io/.*/", sio.http_handler())
-            )
-
-    def run(self):
-        try:
-            self._http_server.run()
-        except Exception as e:
-            logger.error("{}\n{}".format("app exit by some fatal error", traceback.format_exc()))
-        finally:
-            logger.warning("app exit")
-
+    try:
+        __http_server.run()
+    except Exception as e:
+        logger.error("{}\n{}".format("app exit by some fatal error", traceback.format_exc()))
+    finally:
+        logger.warning("app exit")

@@ -4,9 +4,14 @@
     },
     "log": {
         "path": "log",
-        "level": "debug"
+        "level": "debug",
+        "name": "app"
+    },
+    "http": {
+        "type": "tornado"
     },
     "socketio": {
+        "route": "socket.io",
         "event": [
             "/tmp/event/"
         ]

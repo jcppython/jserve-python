@@ -8,3 +8,5 @@ Date: 2022/04/30 16:50:18
 """
 
 __version__ = '0.0.1'
+
+from .server import run
