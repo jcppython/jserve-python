@@ -21,21 +21,42 @@ logger = logging.getLogger()
 sio = None
 
 
+__event_paths = []
+
 def init(is_async=True, **kwargs):
     r""" 初始化 socketio 服务，赋值 sio 对象
     """
     global sio
+    global __event_dirs
 
     if sio is not None:
         raise Exception("you can't init jsocketio twice")
 
     sio = __create_async_server(**kwargs) if is_async else __create_sync_server(**kwargs)
+    add_event(os.path.join(os.path.dirname(__file__), 'basic_event.py'))
 
-    ssocketio.init(True, async_mode='tornado', cors_allowed_origins="*")
-    ssocketio.load_event("./event/")
+    for event_path in __event_paths:
+        __load_event(event_path)
 
 
-def load_event(path):
+def http_handler(**kwargs):
+    r""" 返回 http 处理器
+    """
+    global sio
+    return socketio.get_tornado_handler(sio)
+
+
+def add_event(event_path):
+    r""" 添加事件
+
+    Args:
+    event_path: 加载 module 完成事件注册 (1) 如果指定文件，加载对应 module, (1) 如果指定目录，将遍历并 import 所有 module
+    """
+    global __event_paths
+    __event_paths.append(event_path)
+
+
+def __load_event(path):
     r""" 遍历 path 目录 .py 模块，完成 @sio 事件的加载
     """
 
@@ -47,21 +68,26 @@ def load_event(path):
             return "none", "ignore"
 
         mod_name = file[:-3]   # strip .py at the end
-        importlib.import_module(mod_name, package=__name__)
+        importlib.import_module(mod_name)
         return mod_name, "success"
 
-    sys.path.append(path)
-    for file in os.listdir(path):
+    module_files = []
+
+    module_dir = path
+    if os.path.isfile(path):
+        module_dir = os.path.dirname(path)
+        module_files.append(os.path.basename(path))
+    elif os.path.isdir(path):
+        for file in os.listdir(path):
+            module_files.append(file)
+
+    """ todo: 是否有不污染 sys.path 的优雅方式, remove path from sys.path """
+    sys.path.append(module_dir)
+    for file in module_files:
         mod_name, state = help_load(file)
         logger.warning("state[{}] importlib [{}] from path[{}] file[{}]".format(
             state, mod_name, path, file
         ))
-
-def http_handler(**kwargs):
-    """
-    """
-    sio.http_handler()
-    return socketio.get_tornado_handler(ssocketio.sio)
 
 
 def __config_server(kwargs, is_async=True):

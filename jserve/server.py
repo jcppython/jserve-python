@@ -10,7 +10,6 @@ Date: 2022/05/02 01:50:18
 import os
 import logging
 import asyncio
-import socketio
 
 import logging
 import traceback
@@ -18,8 +17,9 @@ import importlib
 
 from . import configure
 from . import log
-from . import sio
-from .http import tornado as jtornado
+from . import jsocketio
+from .jhttp import tornado as jtornado
+import jserve.jsocketio.socketio as socketio
 
 __http_server = None
 
@@ -49,9 +49,10 @@ def run(workdir, confFile):
     __http_server = create_http_server()
 
     if 'socketio' in configure.options:
+        socketio.init(True, async_mode='tornado', cors_allowed_origins="*")
         socketio_route = configure.options['socketio']['route']
         __http_server.add_route(
-            (f"/{socketio_route}/.*/", sio.http_handler())
+            f"/{socketio_route}/.*/", socketio.http_handler()
         )
 
     try:

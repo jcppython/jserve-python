@@ -9,8 +9,8 @@ Date: 2022/05/02 00:50:18
 
 import logging
 
-from . import sio
-from talk import Talk
+from jserve.jsocketio.socketio import sio
+from jserve.talk import Talk
 
 logger = logging.getLogger()
 namespace = '/test'

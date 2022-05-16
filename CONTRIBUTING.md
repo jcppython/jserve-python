@@ -23,7 +23,7 @@ cd docs
 make html
 ```
 
-# TODO.md
+# 上传包
 
 ```
 // upload first time
@@ -31,6 +31,11 @@ python3 -m twine upload  dist/*
 
 // upload for update
 ```
+
+# todo
+
+- jserve 如何设计能使子包如何更加独立?
+    - configure/log/talk 等在 jhttp/jsocketio 中耦合
 
 # 参考
 - https://packaging.python.org/en/latest/tutorials/packaging-projects/

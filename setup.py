@@ -52,11 +52,12 @@ setup(
     author="jcppython",
     author_email="jcppython@outlook.org",
     url="https://github.com/jcppython/jserve-python",
-    packages=["jserve", "jserve/sio", "jserve/http"],
+    packages=["jserve", "jserve/jsocketio", "jserve/jhttp"],
     python_requires=">=3.6",
     install_requires=[
         'python-socketio',
-        'tornado'
+        'tornado',
+        'eventlet'
     ],
     tests_require=[
         'tox',

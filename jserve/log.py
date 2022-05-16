@@ -10,6 +10,7 @@ Ref: 我们讲日志分为两类：一次处理过程集中打印一条记录-IN
 
 import os
 import logging
+import logging.handlers
 
 class InfoFilter(logging.Filter):
     r""" 仅打印 INFO 级别日志过滤器 xx.log
