@@ -14,17 +14,18 @@ class Http(object):
     r"""http 服务
     """
 
-    def init(self):
+    def __init__(self):
         r""" 初始化服务
         """
-        self._routes = ()
+        pass
 
     def add_route(self, route, handler):
         r""" 添加请求处理路由
         """
-        self._routes.append((route, handler))
+        pass
 
     def run(self):
         r""" 运行服务
         """
         pass
+

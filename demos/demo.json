@@ -1,6 +1,8 @@
 {
     "app": {
-        "port": "8011"
+        "port": {
+            "http": "8011"
+        }
     },
     "log": {
         "path": "log",

@@ -37,6 +37,17 @@ python3 -m twine upload  dist/*
 - jserve 如何设计能使子包如何更加独立?
     - configure/log/talk 等在 jhttp/jsocketio 中耦合
 
+- configure 是否要侵入到 jhttp、jsocketio 等组件内?
+    - 对比：jhttp 等组件定义自己的配置，外层从 configure 剥离出相关配置（这里相当于多了一层显冗余的接偶转化）
+    - 有没有更好的办法两者兼得
+    - 优点：传参数等方便，复用 configure 通路
+    - 缺点：总感觉哪里有耦合
+
+- 不支持 python 3.9+
+    - eventlet 0.33.0 and below doesn't support Python3.9+/kqueue (default hub on FreeBSD, Mac OSX, possibly other BSDs).
+    - https://github.com/eventlet/eventlet/issues/670
+
+
 # 参考
 - https://packaging.python.org/en/latest/tutorials/packaging-projects/
 - https://www.oschina.net/translate/open-sourcing-a-python-project-the-right-way
