@@ -49,8 +49,12 @@ def run(workdir, confFile):
     __http_server = create_http_server()
 
     if 'socketio' in configure.options:
-        socketio.init(True, async_mode='tornado', cors_allowed_origins="*")
         socketio_route = configure.options['socketio']['route']
+        socketio_events = configure.options['socketio']['event']
+        for event_path in socketio_events:
+            socketio.add_event(event_path)
+
+        socketio.init(True, async_mode='tornado', cors_allowed_origins="*")
         __http_server.add_route(
             f"/{socketio_route}/.*/", socketio.http_handler()
         )
